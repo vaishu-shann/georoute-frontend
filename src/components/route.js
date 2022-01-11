@@ -25,72 +25,82 @@ export default class Route extends Component {
   });
 
   componentDidMount = () => {
-    const mqtt = require("async-mqtt");
+    // const mqtt = require("async-mqtt");
 
-    var client = mqtt.connect("wss://test.mosquitto.org");
-    // var client = mqtt.connect("ws://broker.emqx.io:8080");
+    // var client = mqtt.connect("ws://test.mosquitto.org:8080");
+    // // var client = mqtt.connect("ws://broker.emqx.io:8080");
 
-    // Message recieved
+    // // Message recieved
 
-    setTimeout(() => {
-      client.publish("geodata", JSON.stringify(mapData));
-      console.log("Connected and published");
-    }, 3000);
+    // setTimeout(() => {
+    //   client.publish("geodata", JSON.stringify(mapData));
+    //   console.log("Connected and published");
+    // }, 3000);
 
-    client.on("message", (topic, payload) => {
-      console.log(topic);
-      console.log(payload);
-      var signBuffer = new ArrayBuffer(payload.length);
-      let res0 = new Uint8Array(signBuffer);
-      for (let i = 0; i < payload.length; ++i) {
-        res0[i] = payload[i];
-      }
-      // const signblob = new Blob([signBuffer], { type: "text/*" });
-      const blb = new Blob([signBuffer], { type: "text/plain" });
-      const reader = new FileReader();
+    // client.on("message", (topic, payload) => {
+    //   console.log(topic);
+    //   console.log(payload);
+    //   var signBuffer = new ArrayBuffer(payload.length);
+    //   let res0 = new Uint8Array(signBuffer);
+    //   for (let i = 0; i < payload.length; ++i) {
+    //     res0[i] = payload[i];
+    //   }
+    //   // const signblob = new Blob([signBuffer], { type: "text/*" });
+    //   const blb = new Blob([signBuffer], { type: "text/plain" });
+    //   const reader = new FileReader();
 
-      // This fires after the blob has been read/loaded.
-      reader.addEventListener("loadend", (e) => {
-        const text = e.srcElement.result;
-        console.log(text);
-        const { features } = JSON.parse(text);
-        let arr = [];
-        let arr2 = [];
-        let coordinates = features[0]?.geometry?.coordinates;
-        console.log(coordinates);
-        for (var i = 0; i <= coordinates.length - 1; i++) {
-          let obj = {};
-          obj.longitude = coordinates[i][0];
-          obj.latitude = coordinates[i][1];
+    //   // This fires after the blob has been read/loaded.
+    //   reader.addEventListener("loadend", (e) => {
+    //     const text = e.srcElement.result;
+    //     console.log(text);
+    //     const { features } = JSON.parse(text);
+    //     let arr = [];
+    //     let arr2 = [];
+    //     let coordinates = features[0]?.geometry?.coordinates;
+    //     console.log(coordinates);
+    //     for (var i = 0; i <= coordinates.length - 1; i++) {
+    //       let obj = {};
+    //       obj.longitude = coordinates[i][0];
+    //       obj.latitude = coordinates[i][1];
 
-          arr.push(obj);
-          arr2.push([coordinates[i][1], coordinates[i][0]]);
-        }
+    //       arr.push(obj);
+    //       arr2.push([coordinates[i][1], coordinates[i][0]]);
+    //     }
 
-        this.setState({ item: arr, coordinates: arr2 });
-      });
-      reader.readAsText(blb);
-      client.end();
-    });
+    //     this.setState({ item: arr, coordinates: arr2 });
+    //   });
+    //   reader.readAsText(blb);
+    //   client.end();
+    // });
 
-    client.on("connect", () => {
-      client.subscribe("geodata");
-      console.log("Connected to MQTT Broker.");
-    });
+    // client.on("connect", () => {
+    //   client.subscribe("geodata");
+    //   console.log("Connected to MQTT Broker.");
+    // });
 
-    // var client = mqtt.connect(options);
+    // // var client = mqtt.connect(options);
 
-    client.on("error", (err) => {
-      console.log(`Connection to wss URL failed`);
-      console.log(err);
-      client.end();
-    });
+    // client.on("error", (err) => {
+    //   console.log(`Connection to wss URL failed`);
+    //   console.log(err);
+    //   client.end();
+    // });
 
-    client.on("error", (err) => {
-      console.log(`Connection to wss URL failed`);
-      console.log(err);
-      client.end();
-    });
+    const { features } =mapData;
+    let arr = [];
+    let arr2 = [];
+    let coordinates = features[0]?.geometry?.coordinates;
+    console.log(coordinates);
+    for (var i = 0; i <= coordinates.length - 1; i++) {
+      let obj = {};
+      obj.longitude = coordinates[i][0];
+      obj.latitude = coordinates[i][1];
+
+      arr.push(obj);
+      arr2.push([coordinates[i][1], coordinates[i][0]]);
+    }
+
+    this.setState({ item: arr, coordinates: arr2 });
   };
 
   render() {
