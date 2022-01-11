@@ -27,7 +27,7 @@ export default class Route extends Component {
   componentDidMount = () => {
     const mqtt = require("async-mqtt");
 
-    var client = mqtt.connect("wss://test.mosquitto.org:8080");
+    var client = mqtt.connect("wss://test.mosquitto.org:8081");
     // var client = mqtt.connect("ws://broker.emqx.io:8080");
 
     // Message recieved
